@@ -18,6 +18,14 @@ import './base/PeripheryValidation.sol';
 import './base/SelfPermit.sol';
 import './base/PoolInitializer.sol';
 
+bytes32 constant SWAPNITY_ADMIN_ROLE = 0x00;
+
+interface ISwapnityAuthorityChecker {
+    function hasRole(address account, bytes32 role) external returns(bool);
+    function checkPoolCreation(address account) external returns(bool);
+    function checkPoolCreationPermit(address account, uint deadline, uint8 v, bytes32 r, bytes32 s) external returns(bool);
+}
+
 /// @title NFT positions
 /// @notice Wraps Uniswap V3 positions in the ERC721 non-fungible token interface
 contract NonfungiblePositionManager is
@@ -68,12 +76,49 @@ contract NonfungiblePositionManager is
     /// @dev The address of the token descriptor contract, which handles generating token URIs for position tokens
     address private immutable _tokenDescriptor;
 
+    ISwapnityAuthorityChecker public authorityChecker;
+
     constructor(
         address _factory,
         address _WETH9,
         address _tokenDescriptor_
     ) ERC721Permit('Uniswap V3 Positions NFT-V1', 'UNI-V3-POS', '1') PeripheryImmutableState(_factory, _WETH9) {
         _tokenDescriptor = _tokenDescriptor_;
+    }
+
+    function _createAndInitializePoolIfNecessary(
+        address token0,
+        address token1,
+        uint24 fee,
+        uint160 sqrtPriceX96
+    ) internal override returns (address pool) {
+        if (address(authorityChecker) != address(0))
+            require(authorityChecker.checkPoolCreation(msg.sender), 'Not authorized');
+
+        super._createAndInitializePoolIfNecessary(token0, token1, fee, sqrtPriceX96);
+    }
+
+    function createAndInitializePoolIfNecessaryPermit(
+        address token0,
+        address token1,
+        uint24 fee,
+        uint160 sqrtPriceX96,
+        uint deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external payable returns (address pool) {
+        if (address(authorityChecker) != address(0))
+            require(authorityChecker.checkPoolCreationPermit(msg.sender, deadline, v, r, s), 'Not authorized');
+            
+        super._createAndInitializePoolIfNecessary(token0, token1, fee, sqrtPriceX96);
+    }
+
+    function setAuthorityChecker(ISwapnityAuthorityChecker newChecker) external {
+        if (address(authorityChecker) != address(0))
+            require(authorityChecker.hasRole(msg.sender, SWAPNITY_ADMIN_ROLE), 'Not authorized');
+
+        authorityChecker = newChecker;
     }
 
     /// @inheritdoc INonfungiblePositionManager
