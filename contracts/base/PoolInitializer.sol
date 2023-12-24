@@ -16,14 +16,25 @@ abstract contract PoolInitializer is IPoolInitializer, PeripheryImmutableState {
         uint24 fee,
         uint160 sqrtPriceX96
     ) external payable override returns (address pool) {
-        return _createAndInitializePoolIfNecessary(token0, token1, fee, sqrtPriceX96);
+        return _createAndInitializePoolIfNecessary(token0, token1, fee, sqrtPriceX96, '');
+    }
+
+    function createAndInitializePoolIfNecessaryPermit(
+        address token0,
+        address token1,
+        uint24 fee,
+        uint160 sqrtPriceX96,
+        bytes calldata data
+    ) external payable returns (address pool) {
+        return _createAndInitializePoolIfNecessary(token0, token1, fee, sqrtPriceX96, data);
     }
 
     function _createAndInitializePoolIfNecessary(
         address token0,
         address token1,
         uint24 fee,
-        uint160 sqrtPriceX96
+        uint160 sqrtPriceX96,
+        bytes memory data
     ) internal virtual returns (address pool) {
 
         require(token0 < token1);
@@ -31,12 +42,18 @@ abstract contract PoolInitializer is IPoolInitializer, PeripheryImmutableState {
 
         if (pool == address(0)) {
             pool = IUniswapV3Factory(factory).createPool(token0, token1, fee);
+            _beforeInitPool(data);
             IUniswapV3Pool(pool).initialize(sqrtPriceX96);
         } else {
             (uint160 sqrtPriceX96Existing, , , , , , ) = IUniswapV3Pool(pool).slot0();
             if (sqrtPriceX96Existing == 0) {
+                _beforeInitPool(data);
                 IUniswapV3Pool(pool).initialize(sqrtPriceX96);
             }
         }
+    }
+
+    function _beforeInitPool(bytes memory data) internal virtual {
+
     }
 }

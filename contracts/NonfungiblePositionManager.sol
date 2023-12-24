@@ -20,10 +20,9 @@ import './base/PoolInitializer.sol';
 
 bytes32 constant SWAPNITY_ADMIN_ROLE = 0x00;
 
-interface ISwapnityAuthorityChecker {
-    function hasRole(address account, bytes32 role) external returns(bool);
-    function checkPoolCreation(address account) external returns(bool);
-    function checkPoolCreationPermit(address account, uint deadline, uint8 v, bytes32 r, bytes32 s) external returns(bool);
+interface IAuthorityChecker {
+    function hasRole(bytes32 role, address account) external returns(bool);
+    function checkPoolCreation(address account, bytes calldata data) external returns(bool);
 }
 
 /// @title NFT positions
@@ -76,7 +75,7 @@ contract NonfungiblePositionManager is
     /// @dev The address of the token descriptor contract, which handles generating token URIs for position tokens
     address private immutable _tokenDescriptor;
 
-    ISwapnityAuthorityChecker public authorityChecker;
+    IAuthorityChecker public authorityChecker;
 
     constructor(
         address _factory,
@@ -86,37 +85,14 @@ contract NonfungiblePositionManager is
         _tokenDescriptor = _tokenDescriptor_;
     }
 
-    function _createAndInitializePoolIfNecessary(
-        address token0,
-        address token1,
-        uint24 fee,
-        uint160 sqrtPriceX96
-    ) internal override returns (address pool) {
+    function _beforeInitPool(bytes memory data) internal override {
         if (address(authorityChecker) != address(0))
-            require(authorityChecker.checkPoolCreation(msg.sender), 'Not authorized');
-
-        super._createAndInitializePoolIfNecessary(token0, token1, fee, sqrtPriceX96);
+            require(authorityChecker.checkPoolCreation(msg.sender, data), 'Not authorized');
     }
 
-    function createAndInitializePoolIfNecessaryPermit(
-        address token0,
-        address token1,
-        uint24 fee,
-        uint160 sqrtPriceX96,
-        uint deadline,
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    ) external payable returns (address pool) {
+    function setAuthorityChecker(IAuthorityChecker newChecker) external {
         if (address(authorityChecker) != address(0))
-            require(authorityChecker.checkPoolCreationPermit(msg.sender, deadline, v, r, s), 'Not authorized');
-            
-        super._createAndInitializePoolIfNecessary(token0, token1, fee, sqrtPriceX96);
-    }
-
-    function setAuthorityChecker(ISwapnityAuthorityChecker newChecker) external {
-        if (address(authorityChecker) != address(0))
-            require(authorityChecker.hasRole(msg.sender, SWAPNITY_ADMIN_ROLE), 'Not authorized');
+            require(authorityChecker.hasRole(SWAPNITY_ADMIN_ROLE, msg.sender), 'Not authorized');
 
         authorityChecker = newChecker;
     }
