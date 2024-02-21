@@ -18,6 +18,13 @@ import './base/PeripheryValidation.sol';
 import './base/SelfPermit.sol';
 import './base/PoolInitializer.sol';
 
+bytes32 constant SWAPNITY_ADMIN_ROLE = 0x00;
+
+interface IAuthorityChecker {
+    function hasRole(bytes32 role, address account) external returns(bool);
+    function checkPoolCreation(address account, bytes calldata data) external returns(bool);
+}
+
 /// @title NFT positions
 /// @notice Wraps Uniswap V3 positions in the ERC721 non-fungible token interface
 contract NonfungiblePositionManager is
@@ -68,12 +75,26 @@ contract NonfungiblePositionManager is
     /// @dev The address of the token descriptor contract, which handles generating token URIs for position tokens
     address private immutable _tokenDescriptor;
 
+    IAuthorityChecker public authorityChecker;
+
     constructor(
         address _factory,
         address _WETH9,
         address _tokenDescriptor_
     ) ERC721Permit('Uniswap V3 Positions NFT-V1', 'UNI-V3-POS', '1') PeripheryImmutableState(_factory, _WETH9) {
         _tokenDescriptor = _tokenDescriptor_;
+    }
+
+    function _beforeInitPool(bytes memory data) internal override {
+        if (address(authorityChecker) != address(0))
+            require(authorityChecker.checkPoolCreation(msg.sender, data), 'Not authorized');
+    }
+
+    function setAuthorityChecker(IAuthorityChecker newChecker) external {
+        if (address(authorityChecker) != address(0))
+            require(authorityChecker.hasRole(SWAPNITY_ADMIN_ROLE, msg.sender), 'Not authorized');
+
+        authorityChecker = newChecker;
     }
 
     /// @inheritdoc INonfungiblePositionManager

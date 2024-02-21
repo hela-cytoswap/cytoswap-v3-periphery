@@ -1,20 +1,21 @@
 {
-  "name": "@uniswap/v3-periphery",
+  "name": "@swapnity/v3-periphery",
   "description": "🎚 Peripheral smart contracts for interacting with Uniswap V3",
   "license": "GPL-2.0-or-later",
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.4.3",
-  "homepage": "https://uniswap.org",
+  "version": "1.4.5",
+  "homepage": "https://swapnity.com",
   "keywords": [
+    "swapnity",
     "uniswap",
     "periphery",
     "v3"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Uniswap/uniswap-v3-periphery"
+    "url": "https://gitlab.snapresearch.io/swapnity/uniswap-v3-periphery"
   },
   "files": [
     "contracts/base",
@@ -47,6 +48,7 @@
     "ethereum-waffle": "^3.0.2",
     "ethers": "^5.0.8",
     "hardhat": "^2.6.8",
+    "hardhat-contract-sizer": "^2.10.0",
     "hardhat-typechain": "^0.3.5",
     "hardhat-watcher": "^2.1.1",
     "is-svg": "^4.3.1",
