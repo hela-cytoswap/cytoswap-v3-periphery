@@ -2,8 +2,8 @@
 pragma solidity =0.7.6;
 pragma abicoder v2;
 
-import '@uniswap/v3-core/contracts/interfaces/callback/IUniswapV3FlashCallback.sol';
-import '@uniswap/v3-core/contracts/libraries/LowGasSafeMath.sol';
+import '@cytoswap/v3-core/contracts/interfaces/callback/ICytoswapV3FlashCallback.sol';
+import '@cytoswap/v3-core/contracts/libraries/LowGasSafeMath.sol';
 
 import '../base/PeripheryPayments.sol';
 import '../base/PeripheryImmutableState.sol';
@@ -13,8 +13,8 @@ import '../libraries/TransferHelper.sol';
 import '../interfaces/ISwapRouter.sol';
 
 /// @title Flash contract implementation
-/// @notice An example contract using the Uniswap V3 flash function
-contract PairFlash is IUniswapV3FlashCallback, PeripheryPayments {
+/// @notice An example contract using the Cytoswap V3 flash function
+contract PairFlash is ICytoswapV3FlashCallback, PeripheryPayments {
     using LowGasSafeMath for uint256;
     using LowGasSafeMath for int256;
 
@@ -43,7 +43,7 @@ contract PairFlash is IUniswapV3FlashCallback, PeripheryPayments {
     /// @param data The data needed in the callback passed as FlashCallbackData from `initFlash`
     /// @notice implements the callback called from flash
     /// @dev fails if the flash is not profitable, meaning the amountOut from the flash is less than the amount borrowed
-    function uniswapV3FlashCallback(
+    function cytoswapV3FlashCallback(
         uint256 fee0,
         uint256 fee1,
         bytes calldata data
@@ -124,7 +124,7 @@ contract PairFlash is IUniswapV3FlashCallback, PeripheryPayments {
     function initFlash(FlashParams memory params) external {
         PoolAddress.PoolKey memory poolKey =
             PoolAddress.PoolKey({token0: params.token0, token1: params.token1, fee: params.fee1});
-        IUniswapV3Pool pool = IUniswapV3Pool(PoolAddress.computeAddress(factory, poolKey));
+        ICytoswapV3Pool pool = ICytoswapV3Pool(PoolAddress.computeAddress(factory, poolKey));
         // recipient of borrowed amounts
         // amount of token0 requested to borrow
         // amount of token1 requested to borrow

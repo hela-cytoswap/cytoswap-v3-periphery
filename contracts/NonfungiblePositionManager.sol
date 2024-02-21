@@ -2,9 +2,9 @@
 pragma solidity =0.7.6;
 pragma abicoder v2;
 
-import '@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol';
-import '@uniswap/v3-core/contracts/libraries/FixedPoint128.sol';
-import '@uniswap/v3-core/contracts/libraries/FullMath.sol';
+import '@cytoswap/v3-core/contracts/interfaces/ICytoswapV3Pool.sol';
+import '@cytoswap/v3-core/contracts/libraries/FixedPoint128.sol';
+import '@cytoswap/v3-core/contracts/libraries/FullMath.sol';
 
 import './interfaces/INonfungiblePositionManager.sol';
 import './interfaces/INonfungibleTokenPositionDescriptor.sol';
@@ -18,7 +18,7 @@ import './base/PeripheryValidation.sol';
 import './base/SelfPermit.sol';
 import './base/PoolInitializer.sol';
 
-bytes32 constant SWAPNITY_ADMIN_ROLE = 0x00;
+bytes32 constant CYTOSWAP_ADMIN_ROLE = 0x00;
 
 interface IAuthorityChecker {
     function hasRole(bytes32 role, address account) external returns(bool);
@@ -26,7 +26,7 @@ interface IAuthorityChecker {
 }
 
 /// @title NFT positions
-/// @notice Wraps Uniswap V3 positions in the ERC721 non-fungible token interface
+/// @notice Wraps Cytoswap V3 positions in the ERC721 non-fungible token interface
 contract NonfungiblePositionManager is
     INonfungiblePositionManager,
     Multicall,
@@ -37,7 +37,7 @@ contract NonfungiblePositionManager is
     PeripheryValidation,
     SelfPermit
 {
-    // details about the uniswap position
+    // details about the cytoswap position
     struct Position {
         // the nonce for permits
         uint96 nonce;
@@ -92,7 +92,7 @@ contract NonfungiblePositionManager is
 
     function setAuthorityChecker(IAuthorityChecker newChecker) external {
         if (address(authorityChecker) != address(0))
-            require(authorityChecker.hasRole(SWAPNITY_ADMIN_ROLE, msg.sender), 'Not authorized');
+            require(authorityChecker.hasRole(CYTOSWAP_ADMIN_ROLE, msg.sender), 'Not authorized');
 
         authorityChecker = newChecker;
     }
@@ -158,7 +158,7 @@ contract NonfungiblePositionManager is
             uint256 amount1
         )
     {
-        IUniswapV3Pool pool;
+        ICytoswapV3Pool pool;
         (liquidity, amount0, amount1, pool) = addLiquidity(
             AddLiquidityParams({
                 token0: params.token0,
@@ -231,7 +231,7 @@ contract NonfungiblePositionManager is
 
         PoolAddress.PoolKey memory poolKey = _poolIdToPoolKey[position.poolId];
 
-        IUniswapV3Pool pool;
+        ICytoswapV3Pool pool;
         (liquidity, amount0, amount1, pool) = addLiquidity(
             AddLiquidityParams({
                 token0: poolKey.token0,
@@ -290,7 +290,7 @@ contract NonfungiblePositionManager is
         require(positionLiquidity >= params.liquidity);
 
         PoolAddress.PoolKey memory poolKey = _poolIdToPoolKey[position.poolId];
-        IUniswapV3Pool pool = IUniswapV3Pool(PoolAddress.computeAddress(factory, poolKey));
+        ICytoswapV3Pool pool = ICytoswapV3Pool(PoolAddress.computeAddress(factory, poolKey));
         (amount0, amount1) = pool.burn(position.tickLower, position.tickUpper, params.liquidity);
 
         require(amount0 >= params.amount0Min && amount1 >= params.amount1Min, 'Price slippage check');
@@ -342,7 +342,7 @@ contract NonfungiblePositionManager is
 
         PoolAddress.PoolKey memory poolKey = _poolIdToPoolKey[position.poolId];
 
-        IUniswapV3Pool pool = IUniswapV3Pool(PoolAddress.computeAddress(factory, poolKey));
+        ICytoswapV3Pool pool = ICytoswapV3Pool(PoolAddress.computeAddress(factory, poolKey));
 
         (uint128 tokensOwed0, uint128 tokensOwed1) = (position.tokensOwed0, position.tokensOwed1);
 
