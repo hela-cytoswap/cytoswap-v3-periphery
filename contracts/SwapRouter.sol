@@ -17,8 +17,8 @@ import './libraries/PoolAddress.sol';
 import './libraries/CallbackValidation.sol';
 import './interfaces/external/IWETH9.sol';
 
-/// @title Uniswap V3 Swap Router
-/// @notice Router for stateless execution of swaps against Uniswap V3
+/// @title Cytoswap V3 Swap Router
+/// @notice Router for stateless execution of swaps against Cytoswap V3
 contract SwapRouter is
     ISwapRouter,
     PeripheryImmutableState,

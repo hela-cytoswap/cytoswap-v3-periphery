@@ -18,7 +18,7 @@ import './base/PeripheryValidation.sol';
 import './base/SelfPermit.sol';
 import './base/PoolInitializer.sol';
 
-bytes32 constant SWAPNITY_ADMIN_ROLE = 0x00;
+bytes32 constant CYTOSWAP_ADMIN_ROLE = 0x00;
 
 interface IAuthorityChecker {
     function hasRole(bytes32 role, address account) external returns(bool);
@@ -26,7 +26,7 @@ interface IAuthorityChecker {
 }
 
 /// @title NFT positions
-/// @notice Wraps Uniswap V3 positions in the ERC721 non-fungible token interface
+/// @notice Wraps Cytoswap V3 positions in the ERC721 non-fungible token interface
 contract NonfungiblePositionManager is
     INonfungiblePositionManager,
     Multicall,
@@ -37,7 +37,7 @@ contract NonfungiblePositionManager is
     PeripheryValidation,
     SelfPermit
 {
-    // details about the uniswap position
+    // details about the cytoswap position
     struct Position {
         // the nonce for permits
         uint96 nonce;
@@ -92,7 +92,7 @@ contract NonfungiblePositionManager is
 
     function setAuthorityChecker(IAuthorityChecker newChecker) external {
         if (address(authorityChecker) != address(0))
-            require(authorityChecker.hasRole(SWAPNITY_ADMIN_ROLE, msg.sender), 'Not authorized');
+            require(authorityChecker.hasRole(CYTOSWAP_ADMIN_ROLE, msg.sender), 'Not authorized');
 
         authorityChecker = newChecker;
     }

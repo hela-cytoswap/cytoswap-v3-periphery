@@ -1,21 +1,20 @@
 {
-  "name": "@swapnity/v3-periphery",
-  "description": "🎚 Peripheral smart contracts for interacting with Uniswap V3",
+  "name": "@cytoswap/v3-periphery",
+  "description": "🎚 Peripheral smart contracts for interacting with Cytoswap V3",
   "license": "GPL-2.0-or-later",
   "publishConfig": {
     "access": "public"
   },
   "version": "1.4.5",
-  "homepage": "https://swapnity.com",
+  "homepage": "https://cytoswap.com",
   "keywords": [
-    "swapnity",
-    "uniswap",
+    "cytoswap",
     "periphery",
     "v3"
   ],
   "repository": {
     "type": "git",
-    "url": "https://gitlab.snapresearch.io/swapnity/uniswap-v3-periphery"
+    "url": "https://gitlab.snapresearch.io/swapnity/cy-v3-periphery"
   },
   "files": [
     "contracts/base",
