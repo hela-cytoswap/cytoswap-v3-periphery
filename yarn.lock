@@ -40,10 +40,10 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
-"@cytoswap/v3-core@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@cytoswap/v3-core/-/v3-core-1.0.1.tgz#ad00857ba59df5bf0c5957b1916089e015b534be"
-  integrity sha512-jiutCQPEdmmTcw0Sb9wat+4d46oqgKo6OZIFJO+Ww+iws7Awssl9TlFJoRUNAl8fwVV4raTKd0Y3T4Ps6M1C0Q==
+"@cytoswap/v3-core@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@cytoswap/v3-core/-/v3-core-1.0.2.tgz#c743f365547a2a23cc396c04e128d5d78f98e5bf"
+  integrity sha512-b9EQVBjk54sL4A60yequvrNY0pB3lxArfIUZh7DW7uyygN7SDxW3663Gt5aZ1YuA1014ux/gua3R9I5+U1gCZg==
 
 "@ensdomains/ens@^0.4.4":
   version "0.4.5"
