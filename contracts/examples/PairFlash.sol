@@ -120,7 +120,7 @@ contract PairFlash is ICytoswapV3FlashCallback, PeripheryPayments {
     }
 
     /// @param params The parameters necessary for flash and the callback, passed in as FlashParams
-    /// @notice Calls the pools flash function with data needed in `uniswapV3FlashCallback`
+    /// @notice Calls the pools flash function with data needed in `cytoswapV3FlashCallback`
     function initFlash(FlashParams memory params) external {
         PoolAddress.PoolKey memory poolKey =
             PoolAddress.PoolKey({token0: params.token0, token1: params.token1, fee: params.fee1});
