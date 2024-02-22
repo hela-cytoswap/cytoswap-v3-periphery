@@ -6,7 +6,7 @@ import '@cytoswap/v3-core/contracts/libraries/SafeCast.sol';
 import '@cytoswap/v3-core/contracts/interfaces/ICytoswapV3Pool.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
-contract TestUniswapV3Callee is ICytoswapV3SwapCallback {
+contract TestCytoswapV3Callee is ICytoswapV3SwapCallback {
     using SafeCast for uint256;
 
     function swapExact0For1(

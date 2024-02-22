@@ -1,7 +1,7 @@
 # Cytoswap V3 Periphery
 
 This repository contains the periphery smart contracts for the Cytoswap V3 Protocol.
-For the lower level core contracts, see the [cytoswap-v3-core](https://gitlab.snapresearch.io/swapnity/uniswap-sdk-core)
+For the lower level core contracts, see the [cytoswap-v3-core](https://gitlab.snapresearch.io/swapnity/cytoswap-sdk-core)
 repository.
 
 ## Bug bounty
